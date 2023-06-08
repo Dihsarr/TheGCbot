@@ -1,7 +1,6 @@
-const TeleBot = require('telebot');
 const bot = require('./bot')
 
-console.log(bot);
+
 const pingEveryone = (msg) =>{
     msg.reply.text("@Dihsarr @benoji @paytoncollins @involutex @neeguss @Cranbaeri @puffpuff26 @Jayvid12 @mobu2 @p4rs33 @DimSum9000 @Yahootoyou @omegadeecee")
 }
