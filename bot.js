@@ -1,10 +1,7 @@
 require('dotenv').config()
 const {
     pingEveryone,
-    pinMessage,
     getCatFact,
-    getInsult
-
 } = require("./botController")
 
 const TeleBot = require('telebot');
@@ -12,10 +9,36 @@ const bot = new TeleBot(process.env.TOKEN);
 
 bot.on('/everyone', pingEveryone);
 
- bot.on('/pin', pinMessage)
+ bot.on('/pin', async msg =>{
+    try{
+        if(!msg.reply_to_message){
+            msg.reply.text("Use: Reply to the message you want to pin with /pin")
+            return
+        }
+        await bot.pinChatMessage(msg.chat.id, msg.reply_to_message.message_id)
+    } catch(error){
+        console.log(error);
+    }
+ } )
 
  bot.on('/catfact', getCatFact)
 
- bot.on('/insult', getInsult)
+ bot.on('/insult', async msg => {
+    try{
+        const response = await fetch("https://evilinsult.com/generate_insult.php?lang=en&type=json")
+        const json = await response.json()
+        if(msg.reply_to_message){
+            await bot.sendMessage(msg.chat.id,json.insult, {replyToMessage: msg.reply_to_message.message_id})
+            return 
+        }
+        msg.reply.text(json.insult)
+
+    }catch(error){
+        msg.reply.text('An Error occurred :(')
+        console.log(error);
+    }
+ })
 
 bot.start();
+
+module.exports = bot
