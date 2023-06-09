@@ -41,7 +41,7 @@ bot.on('/everyone', pingEveryone);
  })
 
  //connects bot to database then listens for requests
-mongoose.connect(process.env.MONGO_URI)
+await mongoose.connect(process.env.MONGO_URI)
     .then(() =>{
         console.log('[debug] connected to db');
         bot.start();
