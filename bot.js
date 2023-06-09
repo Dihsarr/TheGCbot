@@ -1,4 +1,5 @@
 require('dotenv').config()
+const mongoose = require('mongoose')
 const {
     pingEveryone,
     getCatFact,
@@ -39,6 +40,12 @@ bot.on('/everyone', pingEveryone);
     }
  })
 
-bot.start();
+ //connects bot to database then listens for requests
+mongoose.connect(process.env.MONGO_URI)
+    .then(() =>{
+        console.log('[debug] connected to db');
+        bot.start();
+    })
+    .catch( error => console.log(error))
 
 module.exports = bot
