@@ -13,7 +13,13 @@ const TeleBot = require('telebot');
 const bot = new TeleBot(process.env.TOKEN);
 
 //@'s every person in the telegram chat
-bot.on('/everyone', pingEveryone);
+bot.on('/everyone', (msg) =>{
+    if(msg.reply_to_message){
+        bot.sendMessage(msg.chat.id,"@Dihsarr @benoji @paytoncollins @involutex @neeguss @Cranbaeri @puffpuff26 @Jayvid12 @mobu2 @p4rs33 @DimSum9000 @Yahootoyou @omegadeecee", {replyToMessage: msg.reply_to_message.message_id})
+        return 
+    }
+    msg.reply.text("@Dihsarr @benoji @paytoncollins @involutex @neeguss @Cranbaeri @puffpuff26 @Jayvid12 @mobu2 @p4rs33 @DimSum9000 @Yahootoyou @omegadeecee")
+})
 
 //pins a message to the currect chat
  bot.on('/pin', async msg =>{
