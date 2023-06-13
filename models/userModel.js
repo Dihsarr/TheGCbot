@@ -2,19 +2,18 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
-const addressSchema = new Schema({
+const userSchema = new Schema({
     //the User that used the command
-    setUser:{
+    id:{
         type: Number,
-        required: true
+        required: true,
+        unique: true
     },
     //the user of the adress that is being stored
-    targetUser:{
-        type: Number,
-        required: true
-    },
-    address:{
+   username:{
         type: String,
         required: true
     }
 })
+
+module.exports = mongoose.model('users', userSchema)
