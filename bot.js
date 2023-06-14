@@ -3,7 +3,6 @@ const mongoose = require('mongoose')
 const Address  = require('./models/addressModel')
 const User = require('./models/userModel')
 const {
-    pingEveryone,
     getCatFact,
 } = require("./botController")
 const {
