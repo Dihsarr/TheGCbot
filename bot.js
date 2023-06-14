@@ -6,7 +6,8 @@ const {
     getCatFact,
 } = require("./botController")
 const {
-    userToID
+    userToID,
+    removeAtSymbol
 } = require("./utilityFunctions")
 const TeleBot = require('telebot');
 const bot = new TeleBot(process.env.TOKEN);
@@ -21,7 +22,7 @@ bot.on('/everyone', (msg) =>{
 })
 
 //pins a message to the currect chat
- bot.on('/pin', async msg =>{
+bot.on('/pin', async msg =>{
     //if message is not sent as reply give error
     try{
         if(!msg.reply_to_message){
@@ -58,13 +59,14 @@ bot.on('/everyone', (msg) =>{
  //use to set another users address
 bot.on(/^\/setaddress (\S+)\s(.+)$/i, async (msg,props) => {
 
+    const username = removeAtSymbol(props.match[1])
     //sets command to be only used in private chats
     if(msg.chat.type !== 'private'){
         bot.sendMessage(msg.from.id, 'Command must be used in my dm')
         return
     }
 
-    const targetUserId = await userToID(props.match[1])
+    const targetUserId = await userToID(username)
     const response = await Address.findOne({setUser: msg.from.id, targetUser: targetUserId })
 
     //if targetuser and the setting user are the same updates address
@@ -101,7 +103,10 @@ bot.on(/^\/setaddress (\S+)\s(.+)$/i, async (msg,props) => {
   })
 
   bot.on(/^\/address (.+)$/, async (msg, props) =>{
-    const targetUserId = await userToID(props.match[1])
+
+    const username = removeAtSymbol(props.match[1])
+    const targetUserId = await userToID(username)
+
     const response = await Address.findOne({setUser: msg.from.id, targetUser: targetUserId })
     if(!response){
         bot.sendMessage(msg.from.id,"Address not found, use /setaddress")

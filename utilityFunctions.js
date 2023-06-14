@@ -8,4 +8,15 @@ const userToID = async user => {
    return response.id
 }
 
-module.exports = {userToID}
+
+const removeAtSymbol = (username) => {
+    if (username.startsWith("@")) {
+      return username.substring(1);
+    }
+    return username;
+}
+
+module.exports = {
+    userToID,
+    removeAtSymbol
+}
