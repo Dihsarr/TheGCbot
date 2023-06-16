@@ -144,7 +144,7 @@ bot.on(/^\/setaddress (\S+)\s(.+)$/i, async (msg,props) => {
     const eventDescription = props.match[4]
 
     
-    const response = await Event.create({
+    await Event.create({
         eventName,
         eventLocation,
         eventDate,
@@ -158,6 +158,19 @@ bot.on(/^\/setaddress (\S+)\s(.+)$/i, async (msg,props) => {
             msg.reply.text('Invalid Date format: [mm/dd/yyyy hh:mm am/pm]')
         }
     })
+})
+
+bot.on(/^\/events (.+)$/, async (msg,props) => {
+    const prop = props.match[1]
+
+    switch(prop){
+        case 'all':
+            const response = await Event.find({}).sort({eventDate: -1})
+            response.forEach((event) => {
+                msg.reply.text('Name: ' + event.eventName + '\nLocation : '+ event.eventLocation  + '\nDate : ' + event.eventDate + '\nDescription: ' + event.eventDescription)
+            })
+            break; 
+    }
 })
 
  // a dev command
