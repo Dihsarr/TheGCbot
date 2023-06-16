@@ -2,6 +2,7 @@ require('dotenv').config()
 const mongoose = require('mongoose')
 const Address  = require('./models/addressModel')
 const User = require('./models/userModel')
+const Event = require('./models/eventModel')
 const {
     getCatFact,
 } = require("./botController")
@@ -135,6 +136,29 @@ bot.on(/^\/setaddress (\S+)\s(.+)$/i, async (msg,props) => {
    })
     .catch((error) => console.log(error._message))
  })
+
+ bot.on(/^\/addevent \[(.+)] \[(.+)] \[(.+)] (.+)$/i, async (msg, props) => {
+    const eventName = props.match[1]
+    const eventLocation = props.match[2]
+    const eventDate =  new Date(props.match[3] + ' GMT')
+    const eventDescription = props.match[4]
+
+    
+    const response = await Event.create({
+        eventName,
+        eventLocation,
+        eventDate,
+        eventDescription
+    })
+    .then(() => {
+        msg.reply.text("Event Sucessfully added!")
+    })
+    .catch(error => {
+        if(error.errors.eventDate.valueType === 'Date'){
+            msg.reply.text('Invalid Date format: [mm/dd/yyyy hh:mm am/pm]')
+        }
+    })
+})
 
  // a dev command
  bot.on('/devTest', msg => console.log(msg))
