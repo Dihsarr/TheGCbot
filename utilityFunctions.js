@@ -17,8 +17,10 @@ const removeAtSymbol = (username) => {
 }
 
 const formatTime = (date) => {
-    var hours = date.getHours()
-    const minutes = date.getMinutes()
+    console.log(date);
+    var hours = date.getUTCHours()
+    var minutes = date.getMinutes()
+    console.log(hours, minutes);
 
     var suffix = ''
 
@@ -31,6 +33,13 @@ const formatTime = (date) => {
     }
     else{
         suffix = 'PM'
+    }
+
+    if(minutes < 10){
+        minuteText = minutes.toString()
+        minuteText = '0' + minuteText
+
+        return `${hours}:${minuteText} ${suffix}`
     }
 
     return `${hours}:${minutes} ${suffix}`
