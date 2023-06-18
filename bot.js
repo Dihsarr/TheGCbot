@@ -167,7 +167,7 @@ bot.on(/^\/events (.+)$/, async (msg,props) => {
     switch(prop){
         case 'all':
             const response = await Event.find({})
-            const sortedResponse = response.sort((a, b) =>  a.eventName - b.eventName )
+            const sortedResponse = response.sort((a, b) =>  b.eventName - a.eventName )
             
             sortedResponse.forEach((event) => {
                 msg.reply.text(
