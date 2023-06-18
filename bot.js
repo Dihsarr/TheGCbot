@@ -8,14 +8,15 @@ const {
 } = require("./botController")
 const {
     userToID,
-    removeAtSymbol
+    removeAtSymbol,
+    formatTime
 } = require("./utilityFunctions")
 
 const TeleBot = require('telebot');
 const bot = new TeleBot(process.env.TOKEN);
 
 //@'s every person in the telegram chat
-bot.on('/everyone', (msg) =>{
+bot.on('/everyone', async (msg) =>{
     if(msg.reply_to_message){
         bot.sendMessage(msg.chat.id,"@Dihsarr @benoji @paytoncollins @involutex @neeguss @Cranbaeri @puffpuff26 @Jayvid12 @mobu2 @p4rs33 @DimSum9000 @Yahootoyou @omegadeecee", {replyToMessage: msg.reply_to_message.message_id})
         return 
@@ -161,13 +162,20 @@ bot.on(/^\/setaddress (\S+)\s(.+)$/i, async (msg,props) => {
 })
 
 bot.on(/^\/events (.+)$/, async (msg,props) => {
-    const prop = props.match[1]
+    const prop = props.match[1] 
 
     switch(prop){
         case 'all':
-            const response = await Event.find({}).sort({eventDate: -1})
-            response.forEach((event) => {
-                msg.reply.text('Name: ' + event.eventName + '\nLocation : '+ event.eventLocation  + '\nDate : ' + event.eventDate + '\nDescription: ' + event.eventDescription)
+            const response = await Event.find({})
+            const sortedResponse = response.sort((a, b) =>  a.eventName - b.eventName )
+            
+            sortedResponse.forEach((event) => {
+                msg.reply.text(
+                    event.eventName
+                    + '\nLocation : '+ event.eventLocation
+                    + '\nDate : ' + event.eventDate.toDateString()
+                    + '\nTime : ' + formatTime(event.eventDate)
+                    + '\nDescription: ' + event.eventDescription)
             })
             break; 
     }

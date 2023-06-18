@@ -16,7 +16,30 @@ const removeAtSymbol = (username) => {
     return username;
 }
 
+const formatTime = (date) => {
+    var hours = date.getHours()
+    const minutes = date.getMinutes()
+
+    var suffix = ''
+
+    if(hours > 12 ){
+        hours -= 12 
+        suffix = 'PM'
+    } 
+    else if (hours < 12){
+        suffix = 'AM'
+    }
+    else{
+        suffix = 'PM'
+    }
+
+    return `${hours}:${minutes} ${suffix}`
+    
+    
+}
+
 module.exports = {
     userToID,
-    removeAtSymbol
+    removeAtSymbol,
+    formatTime
 }
