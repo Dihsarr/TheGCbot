@@ -17,10 +17,8 @@ const removeAtSymbol = (username) => {
 }
 
 const formatTime = (date) => {
-    console.log(date);
     var hours = date.getUTCHours()
     var minutes = date.getMinutes()
-    console.log(hours, minutes);
 
     var suffix = ''
 
@@ -43,12 +41,17 @@ const formatTime = (date) => {
     }
 
     return `${hours}:${minutes} ${suffix}`
-    
-    
+}
+
+const waitSeconds =  (ms) => {
+    return new Promise((resolve) => {
+         setTimeout(resolve,ms)
+    })
 }
 
 module.exports = {
     userToID,
     removeAtSymbol,
-    formatTime
+    formatTime,
+    waitSeconds
 }

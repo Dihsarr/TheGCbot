@@ -9,7 +9,8 @@ const {
 const {
     userToID,
     removeAtSymbol,
-    formatTime
+    formatTime,
+    waitSeconds
 } = require("./utilityFunctions")
 
 const TeleBot = require('telebot');
@@ -163,23 +164,79 @@ bot.on(/^\/setaddress (\S+)\s(.+)$/i, async (msg,props) => {
 
 bot.on(/^\/events (.+)$/, async (msg,props) => {
     const prop = props.match[1] 
+    var filterDays = 0
 
-    switch(prop){
+    //filter date will be used to set date to filter by
+    switch (prop) {
         case 'all':
-            const response = await Event.find({})
-            const sortedResponse = response.sort((a, b) =>  b.eventName - a.eventName )
-            
-            sortedResponse.forEach((event) => {
-                msg.reply.text(
-                    event.eventName
-                    + '\nLocation : '+ event.eventLocation
-                    + '\nDate : ' + event.eventDate.toDateString()
-                    + '\nTime : ' + formatTime(event.eventDate)
-                    + '\nDescription: ' + event.eventDescription)
-            })
-            break; 
+            filterDays = 9999999
+            break;
+        case 'week':
+            filterDays = 7
+            break;
+        case 'month':
+            filterDays = 30
+            break;
+        default:
+            msg.reply.text('Invalid timescale use: all/week/month')
+            return
     }
-})
+            //generates a date filterDays days away
+            const filterDate = new Date()
+            filterDate.setDate(filterDate.getDate() + filterDays)
+
+
+            var response = await Event.find({})
+            const filteredEvents = []
+
+            //adds event to filteredEvents if it falls before the filter Date
+            response.forEach((event) => {
+                if((filterDate - event.eventDate) > 0 ){
+                    filteredEvents.push(event)
+                }
+            })
+
+            
+            //cases for if no events are found before the filter date
+            if(filteredEvents.length === 0){
+               if(prop === 'all'){
+                msg.reply.text('No events found :( add one with /addevent')
+                return
+               }
+               msg.reply.text(`No events found for the ${prop}.`)
+               return
+            }
+
+            filteredEvents.sort((a,b) => a.eventDate - b.eventDate)
+
+            //a function to individually send the messages with a delay between each
+            const sendMessageWithDelay = async (event) => {
+                return new Promise((resolve) => {
+                  setTimeout(() => {
+                    msg.reply.text(
+                      event.eventName +
+                        '\nLocation: ' +
+                        event.eventLocation +
+                        '\nDate: ' +
+                        event.eventDate.toDateString() +
+                        '\nTime: ' +
+                        formatTime(event.eventDate) +
+                        '\nDescription: ' +
+                        event.eventDescription
+                    );
+                    resolve();
+                  }, 15); 
+                });
+              }
+              
+              //used of instead of foreach so await could be used
+              for (const event of filteredEvents) {
+                await sendMessageWithDelay(event);
+              }
+            
+       }
+      
+)
 
  // a dev command
  bot.on('/devTest', msg => console.log(msg))
