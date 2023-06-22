@@ -182,8 +182,10 @@ bot.on(/^\/events (.+)$/, async (msg,props) => {
             return
     }
             //generates a date filterDays days away
-            const filterDate = new Date()
-            filterDate.setDate(filterDate.getDate() + filterDays)
+            const endFilterDate = new Date()
+            const startFilterDate = new Date()
+            startFilterDate.setDate(startFilterDate.getDate() - 1)
+            endFilterDate.setDate(endFilterDate.getDate() + filterDays)
 
 
             var response = await Event.find({})
@@ -191,7 +193,7 @@ bot.on(/^\/events (.+)$/, async (msg,props) => {
 
             //adds event to filteredEvents if it falls before the filter Date
             response.forEach((event) => {
-                if((filterDate - event.eventDate) > 0 ){
+                if((endFilterDate - event.eventDate) > 0 && (startFilterDate - event.eventDate) < 0 ){
                     filteredEvents.push(event)
                 }
             })
