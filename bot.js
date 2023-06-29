@@ -9,8 +9,7 @@ const {
 const {
     userToID,
     removeAtSymbol,
-    formatTime,
-    waitSeconds
+    sendEventWithDelay
 } = require("./utilityFunctions")
 
 const TeleBot = require('telebot');
@@ -211,34 +210,59 @@ bot.on(/^\/events (.+)$/, async (msg,props) => {
 
             filteredEvents.sort((a,b) => a.eventDate - b.eventDate)
 
-            //a function to individually send the messages with a delay between each
-            const sendMessageWithDelay = async (event) => {
-                return new Promise((resolve) => {
-                  setTimeout(() => {
-                    msg.reply.text(
-                      event.eventName +
-                        '\nLocation: ' +
-                        event.eventLocation +
-                        '\nDate: ' +
-                        event.eventDate.toDateString() +
-                        '\nTime: ' +
-                        formatTime(event.eventDate) +
-                        '\nDescription: ' +
-                        event.eventDescription
-                    );
-                    resolve();
-                  }, 15); 
-                });
-              }
-              
-              //used of instead of foreach so await could be used
-              for (const event of filteredEvents) {
-                await sendMessageWithDelay(event);
-              }
+        //used of instead of foreach so await could be used
+        for (const event of filteredEvents) {
+            await sendEventWithDelay(msg,event);
+        }   
             
        }
       
 )
+
+bot.on(/^\/editevent \[(.+)] \[(.+)] \[(.+)]/, async (msg,props) => {
+
+    //store props
+    const eventName = props.match[1]
+    const fieldToEdit = props.match[2].toLowerCase()
+    var editedContent = props.match[3]
+    
+
+    console.log(editedContent);
+    var schemaToChange = ''
+
+    //changes feildToEdit to match Event Schema 
+    switch(fieldToEdit){
+        case 'name':
+            schemaToChange = {eventName: editedContent}
+            break
+        case 'location':
+            schemaToChange = {eventLocation: editedContent}
+            break
+        case 'date':
+            editedContent = new Date(editedContent + ' GMT')
+            console.log(props.match[3],editedContent);
+            schemaToChange = {eventDate: editedContent}
+            break
+        case 'description':
+            schemaToChange = {eventDescription: editedContent}
+            break
+        default :
+            msg.reply.text('Must enter valid field to change name/location/date/description')
+            return
+    }
+
+    //checks if document exists and updates it if it does
+    const response =  await Event.findOneAndUpdate({eventName}, schemaToChange, {new: true} )
+    if (!response){
+        msg.reply.text('Event not found')
+        return
+    }
+    msg.reply.text('Event updated!')
+    sendEventWithDelay(msg,response)
+
+
+
+})
 
  // a dev command
  bot.on('/devTest', msg => console.log(msg))
@@ -251,3 +275,7 @@ mongoose.connect(process.env.MONGO_URI)
         bot.start();
     })
     .catch( error => console.log(error))
+
+
+
+

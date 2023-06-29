@@ -43,15 +43,31 @@ const formatTime = (date) => {
     return `${hours}:${minutes} ${suffix}`
 }
 
-const waitSeconds =  (ms) => {
+//a function to individually send the messages with a delay between each
+const sendEventWithDelay = async (msg,event) => {
     return new Promise((resolve) => {
-         setTimeout(resolve,ms)
-    })
-}
+      setTimeout(() => {
+        msg.reply.text(
+          event.eventName +
+            '\nLocation: ' +
+            event.eventLocation +
+            '\nDate: ' +
+            event.eventDate.toDateString() +
+            '\nTime: ' +
+            formatTime(event.eventDate) +
+            '\nDescription: ' +
+            event.eventDescription
+        );
+        resolve();
+      }, 15); 
+    });
+  }
 
+  
+  
 module.exports = {
     userToID,
     removeAtSymbol,
     formatTime,
-    waitSeconds
+    sendEventWithDelay
 }
