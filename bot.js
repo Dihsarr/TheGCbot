@@ -240,7 +240,6 @@ bot.on(/^\/editevent \[(.+)] \[(.+)] \[(.+)]/, async (msg,props) => {
             break
         case 'date':
             editedContent = new Date(editedContent + ' GMT')
-            console.log(props.match[3],editedContent);
             schemaToChange = {eventDate: editedContent}
             break
         case 'description':
@@ -260,8 +259,21 @@ bot.on(/^\/editevent \[(.+)] \[(.+)] \[(.+)]/, async (msg,props) => {
     msg.reply.text('Event updated!')
     sendEventWithDelay(msg,response)
 
+})
 
+bot.on(/^\/delevent \[(.+)]/, async (msg,props) => {
+    //assine varibles from props
+    const eventToDelete = props.match[1]
 
+    //find and delete event
+    const response = await Event.findOneAndDelete({eventName: eventToDelete})
+    if(!response){
+        msg.reply.text('Event not found')
+    }
+    sendEventWithDelay(msg,response)
+    msg.reply.text('--- Removed Event ---')
+
+    
 })
 
  // a dev command
