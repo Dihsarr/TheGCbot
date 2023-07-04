@@ -272,8 +272,8 @@ bot.on(/^\/delevent \[(.+)]/, async (msg,props) => {
     if(!response){
         msg.reply.text('Event not found')
     }
-    sendEventWithDelay(msg,response)
     msg.reply.text('--- Removed Event ---')
+    sendEventWithDelay(msg,response)
 
     
 })
