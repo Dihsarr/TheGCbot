@@ -49,12 +49,16 @@ const sendEventWithDelay = async (msg,event) => {
       setTimeout(() => {
         msg.reply.text(
           event.eventName +
+          '\n' +
             '\nLocation: ' +
             event.eventLocation +
+            '\n' +
             '\nDate: ' +
             event.eventDate.toDateString() +
+            '\n' +
             '\nTime: ' +
             formatTime(event.eventDate) +
+            '\n' +
             '\nDescription: ' +
             event.eventDescription
         );

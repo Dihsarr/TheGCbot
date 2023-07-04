@@ -219,14 +219,16 @@ bot.on(/^\/events (.+)$/, async (msg,props) => {
       
 )
 
+
 bot.on(/^\/editevent \[(.+)] \[(.+)] \[(.+)]/, async (msg,props) => {
 
+    
     //store props
     const eventName = props.match[1]
     const fieldToEdit = props.match[2].toLowerCase()
     var editedContent = props.match[3]
     
-
+ 
     console.log(editedContent);
     var schemaToChange = ''
 
