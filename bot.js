@@ -1,8 +1,6 @@
 require('dotenv').config()
 const mongoose = require('mongoose')
-const Address  = require('./models/addressModel')
-const User = require('./models/userModel')
-const Event = require('./models/eventModel')
+
 const {
     getCatFact,
     pinMessage,
