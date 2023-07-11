@@ -66,7 +66,3 @@ mongoose.connect(process.env.MONGO_URI)
         bot.start();
     })
     .catch( error => console.log(error))
-
-
-
-
