@@ -11,9 +11,11 @@ const {
     removeAtSymbol,
     sendEventWithDelay,
     findAndSendEvent,
-    setAddress,
-    sendEveryone
 } = require("./utilityFunctions")
+const {
+    sendEveryone,
+    setAddress
+} = require('./botController')
 
 const TeleBot = require('telebot');
 const bot = new TeleBot(process.env.TOKEN);
