@@ -9,20 +9,18 @@ const {
 const {
     userToID,
     removeAtSymbol,
-    sendEventWithDelay
+    sendEventWithDelay,
+    findAndSendEvent,
+    setAddress,
+    sendEveryone
 } = require("./utilityFunctions")
 
 const TeleBot = require('telebot');
 const bot = new TeleBot(process.env.TOKEN);
 
 //@'s every person in the telegram chat
-bot.on('/everyone', async (msg) =>{
-    if(msg.reply_to_message){
-        bot.sendMessage(msg.chat.id,"@Dihsarr @benoji @paytoncollins @involutex @neeguss @Cranbaeri @puffpuff26 @Jayvid12 @mobu2 @p4rs33 @DimSum9000 @Yahootoyou @omegadeecee", {replyToMessage: msg.reply_to_message.message_id})
-        return 
-    }
-    msg.reply.text("@Dihsarr @benoji @paytoncollins @involutex @neeguss @Cranbaeri @puffpuff26 @Jayvid12 @mobu2 @p4rs33 @DimSum9000 @Yahootoyou @omegadeecee")
-})
+bot.on('/everyone', async msg => {sendEveryone(msg,bot)})  
+
 
 //pins a message to the currect chat
 bot.on('/pin', async msg =>{
@@ -60,50 +58,7 @@ bot.on('/pin', async msg =>{
  })
 
  //use to set another users address
-bot.on(/^\/setaddress (\S+)\s(.+)$/i, async (msg,props) => {
-
-    const username = removeAtSymbol(props.match[1])
-    //sets command to be only used in private chats
-    if(msg.chat.type !== 'private'){
-        bot.sendMessage(msg.from.id, 'Command must be used in my dm')
-        return
-    }
-
-    const targetUserId = await userToID(username)
-    const response = await Address.findOne({setUser: msg.from.id, targetUser: targetUserId })
-
-    //if targetuser and the setting user are the same updates address
-     if(response){
-        await Address.updateOne(
-            {
-                setUser: msg.from.id,
-                targetUser: targetUserId
-            },
-            {
-                address: props.match[2]
-            }
-        )
-        .then(() => {
-            msg.reply.text('Address Updated!')
-        })
-        .catch((error) => {
-            msg.reply.text("An Error occured")
-            console.log(error);
-        })
-        return
-     }
-     await Address.create({
-         setUser: msg.from.id,
-         targetUser: targetUserId,
-         address: props.match[2]
-     })
-     .then(() => {
-        console.log('address set')
-        msg.reply.text('Address sucessfully saved!')
-        return
-    })
-     .catch((error) => console.log(error._message))
-  })
+bot.on(/^\/setaddress (\S+)\s(.+)$/i, async (msg, props) => setAddress(msg,props,bot))
 
   bot.on(/^\/address (.+)$/, async (msg, props) =>{
 
@@ -153,6 +108,8 @@ bot.on(/^\/setaddress (\S+)\s(.+)$/i, async (msg,props) => {
     })
     .then(() => {
         msg.reply.text("Event Sucessfully added!")
+        findAndSendEvent(msg,eventName)
+        
     })
     .catch(error => {
         if(error.errors.eventDate.valueType === 'Date'){
@@ -203,7 +160,7 @@ bot.on(/^\/events (.+)$/, async (msg,props) => {
                if(prop === 'all'){
                 msg.reply.text('No events found :( add one with /addevent')
                 return
-               }
+               }https://cloud.mongodb.com/v2/6438357ca77e5427e4f1c3e2#/security/network
                msg.reply.text(`No events found for the ${prop}.`)
                return
             }
