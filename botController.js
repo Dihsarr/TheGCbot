@@ -9,6 +9,7 @@ const {
     findAndSendEvent,
 } = require("./utilityFunctions")
 
+//@'s every person in the groupchat except for if one particular user uses it 
 const sendEveryone = async (msg,bot) => {
     if(msg.from.id === 1835387722 ){
       msg.reply.text('Nah')
@@ -21,7 +22,7 @@ const sendEveryone = async (msg,bot) => {
     msg.reply.text("@Dihsarr @benoji @paytoncollins @involutex @neeguss @Cranbaeri @puffpuff26 @Jayvid12 @mobu2 @p4rs33 @DimSum9000 @Yahootoyou @omegadeecee")
     }
 
-
+//pins a message to the top of the chat without needing adming privledges
 const pinMessage = async (msg, bot) => {
     //if message is not sent as reply give error
     try{

@@ -29,7 +29,7 @@ bot.on('/everyone', async msg => {sendEveryone(msg,bot)})
 bot.on('/pin', async msg => pinMessage(msg, bot) )
 
  //uses Cat fact api to grab a random cat fact
-bot.on('/catfact', getCatFact)
+bot.on('/catfact', getCatFact(msg))
 
  //uses insult api to grab a random insult
 bot.on('/insult', async msg => getInsult(msg,bot) )
