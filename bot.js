@@ -2,6 +2,8 @@ require('dotenv').config()
 const mongoose = require('mongoose')
 
 const {
+    sendEveryone,
+    setAddress,
     getCatFact,
     pinMessage,
     getInsult,
@@ -12,10 +14,6 @@ const {
     editEvent,
     deleteEvent,
 } = require("./botController")
-const {
-    sendEveryone,
-    setAddress
-} = require('./botController')
 
 const TeleBot = require('telebot');
 const bot = new TeleBot(process.env.TOKEN);
